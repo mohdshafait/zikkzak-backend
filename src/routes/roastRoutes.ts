@@ -1,9 +1,7 @@
-import express from "express";
-import { generateRoast } from "../controllers/roastController";
-
+import express from 'express';
+import { generateRoast } from '../controllers/roastController';
 const router = express.Router();
 
-router.post("/", generateRoast);
+router.post('/', generateRoast);
 
 export default router;
-
