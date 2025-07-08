@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { Configuration, OpenAIApi } from 'openai';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-const openai = new OpenAIApi(new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-}));
+const openai = new OpenAIApi(
+  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
+);
 
 export const generateRoast = async (req: Request, res: Response) => {
   const { name } = req.body;
@@ -13,16 +14,17 @@ export const generateRoast = async (req: Request, res: Response) => {
 
   try {
     const prompt = `Roast this person in a funny, clever one-liner: ${name}`;
-    const response = await openai.createCompletion({
+    const { data } = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt,
-      max_tokens: 50,
+      max_tokens: 50
     });
 
-    const roast = response.data.choices[0].text?.trim() || 'No roast generated.';
+    const roast =
+      data.choices[0].text?.trim() || 'Could not generate roast, try again.';
     res.json({ roast });
   } catch (err) {
-    console.error('OpenAI error:', err);
-    res.status(500).json({ error: 'Failed to generate roast' });
+    console.error(err);
+    res.status(500).json({ error: 'OpenAI failed' });
   }
 };
